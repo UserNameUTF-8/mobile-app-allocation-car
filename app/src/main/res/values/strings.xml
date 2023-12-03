@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">app-allocation-gestion-part</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_user">UserActivity</string>
+    <string name="title_activity_add_user">AddUserActivity</string>
+</resources>
