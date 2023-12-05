@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class netObject {
 
     companion object {
-        private val BASE_UAL = "secirt"
+        private val BASE_UAL = "https://car-allocation.onrender.com"
         private val interceptor = HttpLoggingInterceptor()
         private val client = OkHttpClient().newBuilder().addInterceptor(interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)).readTimeout(100, TimeUnit.SECONDS).connectTimeout(100, TimeUnit.SECONDS).callTimeout(100, TimeUnit.SECONDS) .build()
 
@@ -27,6 +27,14 @@ class netObject {
 
         fun getUserAPI(): UserAPI {
             return retrofitInstance.create(UserAPI::class.java)
+        }
+
+        fun getCarAPI() : CarAPI{
+            return retrofitInstance.create(CarAPI::class.java)
+        }
+
+        fun getAllocationAPI() : HistoryAPI{
+            return retrofitInstance.create(HistoryAPI::class.java)
         }
 
     }

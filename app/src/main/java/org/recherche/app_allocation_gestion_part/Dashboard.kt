@@ -40,6 +40,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -165,13 +166,17 @@ fun ItemsOfBean(text: String, id_: Int) {
 
             onClick = {
                 if (text == "Users"){
-                    context.startActivity(Intent(context, UserActivity::class.java))
+                    val intent = Intent(context, UserActivity::class.java)
+                    context.startActivity(intent)
                 }else if (text == "Admins") {
 
 
                 }else if (text == "Cars") {
+                    context.startActivity(Intent(context, CarsActivity::class.java))
 
                 }else if (text == "History") {
+                    val intent = Intent(context, HistoryActivity::class.java)
+                    context.startActivity(intent)
 
                 }else if (text == "Setting") {
                 }else {

@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 class SessionManagement(application: Application) {
     private val sharedPreferences: SharedPreferences = application.getSharedPreferences("TOKEN", Context.MODE_PRIVATE)
     private val TOKEN = "TOKEN_"
+    private val AUTHORITY = "AUTHORITY"
 
     fun getToken(): String {
         val str = sharedPreferences.getString(TOKEN, "")
@@ -26,5 +27,20 @@ class SessionManagement(application: Application) {
         return true
     }
 
+
+    fun putAuthority(authority: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt(AUTHORITY, authority)
+        editor.commit()
+    }
+
+    fun getAuthority(): Int {
+        return sharedPreferences.getInt(AUTHORITY, -1)
+    }
+
+    fun removeAuthority() : Boolean{
+        sharedPreferences.edit().remove(AUTHORITY).commit()
+        return true
+    }
 
 }

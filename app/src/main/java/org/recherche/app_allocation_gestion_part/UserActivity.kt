@@ -146,8 +146,14 @@ fun UserScreen(viewModel: UserViewModel) {
 @Composable
 fun UserItem(userResponse: UserResponse) {
     val active = "Active"
+    val context = LocalContext.current as Activity
     val disActive  = "Not Active"
-    OutlinedCard(onClick = { Log.d("TAG", "UserItem: ${userResponse.id_user} ") }, modifier = Modifier.fillMaxWidth()) {
+    OutlinedCard(onClick = {
+        Log.d("TAG", "UserItem: user clicked ")
+                           val intent = Intent(context, UserDetails::class.java)
+                            intent.putExtra("id", userResponse.id_user)
+                            context.startActivity(intent)
+    }, modifier = Modifier.fillMaxWidth()) {
         Row (modifier = Modifier.padding(16.dp)){
             Column {
                 Text(text = userResponse.name_user)

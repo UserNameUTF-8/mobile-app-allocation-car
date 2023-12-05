@@ -35,6 +35,7 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
                 val response = repo.getCurrentUser(token)
                 if (response.body() != null && response.code() == 200) {
                     currentUser.postValue(response.body())
+                    sessionManagement.putAuthority(response.body()!!.authority)
                     getCountRes()
                 }else {
                     error_.postValue(true)

@@ -15,6 +15,41 @@
         android:theme="@style/Theme.Appallocationgestionpart"
         tools:targetApi="31">
         <activity
+            android:name=".HistoryDetailsViewModel"
+            android:exported="false"
+            android:label="@string/title_activity_history_details_view_model"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_history"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".viewmodels.HistoryViewModel"
+            android:exported="false"
+            android:label="@string/title_activity_history_view_model"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".AvailableCarsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_available_cars"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".viewmodels.AllocateViewModel"
+            android:exported="false"
+            android:label="@string/title_activity_allocate_view_model"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".CarsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_cars"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
+            android:name=".UserDetails"
+            android:exported="false"
+            android:label="@string/title_activity_user_details"
+            android:theme="@style/Theme.Appallocationgestionpart" />
+        <activity
             android:name=".AddUserActivity"
             android:exported="false"
             android:label="@string/title_activity_add_user"
