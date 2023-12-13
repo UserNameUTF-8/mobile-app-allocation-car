@@ -1,6 +1,7 @@
 package org.recherche.app_allocation_gestion_part
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -55,8 +56,10 @@ class HistoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val viewModel = HistoryViewModel(application)
-        viewModel.getHistoryData()
-
+        if (checkInternetConnection(this))
+            viewModel.getHistoryData()
+        else
+            viewModel.getFromLocal()
         super.onCreate(savedInstanceState)
         setContent {
             AppallocationgestionpartTheme {
@@ -158,16 +161,38 @@ fun HistoryScreen(viewModel: HistoryViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryItem(response: HistoryResponse) {
-    OutlinedCard(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+    val activity = LocalContext.current as Activity
+    OutlinedCard(
+        onClick = {
+            val intent_ = Intent(activity, HistoryDetailsActivity::class.java)
+            intent_.putExtra("id", response.id_history)
+            activity.startActivity(intent_)
+        }, modifier = Modifier.fillMaxWidth()) {
 
-        val textActive  =  @Composable {Text(text = "Active", style = MaterialTheme.typography.labelSmall , color = Color.Green , fontWeight = FontWeight.Bold)}
-        val textDisActive = @Composable {Text(text = "Dis-active", style = MaterialTheme.typography.labelSmall , color = Color.Red , fontWeight = FontWeight.Bold)}
+        val textActive = @Composable {
+            Text(
+                text = "Active",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Green,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        val textDisActive = @Composable {
+            Text(
+                text = "Dis-active",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Red,
+                fontWeight = FontWeight.Bold
+            )
+        }
         val date_ = LocalDateTime.parse(response.ret_date)
 
 
-        Row (modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()){
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
             Column {
                 Text(
                     text = "History ${response.id_history}",
@@ -176,12 +201,20 @@ fun HistoryItem(response: HistoryResponse) {
                 )
                 if (response.is_active) {
                     textActive()
-                }else
+                } else {
                     textDisActive()
-                Text(text = "return at ${date_.year}/${date_.monthValue}/${date_.dayOfMonth}", style = MaterialTheme.typography.labelSmall)
+
+                }
+                Text(
+                    text = "return at ${date_.year}/${date_.monthValue}/${date_.dayOfMonth}",
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.TopEnd) {
-                Icon(painter = painterResource(id = R.drawable.baseline_format_list_bulleted_24), contentDescription = "list" )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_format_list_bulleted_24),
+                    contentDescription = "list"
+                )
             }
         }
     }

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class netObject {
 
     companion object {
-        private val BASE_UAL = "https://car-allocation.onrender.com"
+            private val BASE_UAL = "https://car-allocation.onrender.com"
         private val interceptor = HttpLoggingInterceptor()
         private val client = OkHttpClient().newBuilder().addInterceptor(interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)).readTimeout(100, TimeUnit.SECONDS).connectTimeout(100, TimeUnit.SECONDS).callTimeout(100, TimeUnit.SECONDS) .build()
 

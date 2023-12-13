@@ -11,4 +11,8 @@
     <string name="title_activity_history_view_model">HistoryViewModel</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="title_activity_history_details_view_model">HistoryDetailsViewModel</string>
+    <string name="title_activity_history_map">HistoryMapActivity</string>
+    <string name="title_activity_create_allocation">CreateAllocationActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_add_car">AddCarActivity</string>
 </resources>

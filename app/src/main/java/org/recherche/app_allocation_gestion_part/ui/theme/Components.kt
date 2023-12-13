@@ -63,7 +63,6 @@ class Components {
                     Text(text = title, style = MaterialTheme.typography.titleSmall)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = description)
-                    
                 }
             }
         }

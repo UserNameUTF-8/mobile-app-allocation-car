@@ -154,12 +154,12 @@ fun DetailsScreenV(userDetailsViewModel: UserDetailsViewModel) {
             AlertDialog(
                 dismissButton = {
                                 TextButton(onClick = { isDialogShown = false }) {
-                                    Text(text = "cencel")
+                                    Text(text = "cancel")
                                 }
                 }
                 , confirmButton = { TextButton(
                 onClick = { userDetailsViewModel.banneUser(); context.finish() }) {
-                Text(text = "confirme")
+                Text(text = "confirm")
 
             }}, title = { Text(
                 text = "Confirmation"
@@ -266,7 +266,8 @@ fun DetailsScreenV(userDetailsViewModel: UserDetailsViewModel) {
                     OutlinedButton(
                         onClick = {
                             val intent = Intent(context, AvailableCarsActivity::class.java)
-                            intent.putExtra("id_user", userDetailsViewModel.currentUser.value!!.id_user)
+                            intent.putExtra("id", userDetailsViewModel.currentUser.value!!.id_user)
+                            intent.putExtra("username", userDetailsViewModel.currentUser.value!!.name_user)
                                     context.startActivity(intent)
                                   }, modifier = Modifier.width(120.dp), enabled = !(userDetailsViewModel.currentUser.value!!.is_banned)) {
                         Text(text = "Allocate")

@@ -55,7 +55,11 @@ class UserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val viewModel = UserViewModel(application)
-        viewModel.getAllUsers()
+
+        if(checkInternetConnection(this))
+            viewModel.getAllUsers()
+        else
+            viewModel.getUsersFromLocal()
         super.onCreate(savedInstanceState)
         setContent {
             AppallocationgestionpartTheme {
@@ -153,6 +157,7 @@ fun UserItem(userResponse: UserResponse) {
                            val intent = Intent(context, UserDetails::class.java)
                             intent.putExtra("id", userResponse.id_user)
                             context.startActivity(intent)
+                            context.finish()
     }, modifier = Modifier.fillMaxWidth()) {
         Row (modifier = Modifier.padding(16.dp)){
             Column {

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Divider
@@ -66,15 +67,19 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import org.recherche.app_allocation_gestion_part.ui.theme.AppallocationgestionpartTheme
+import org.recherche.app_allocation_gestion_part.ui.theme.Components
 import org.recherche.app_allocation_gestion_part.viewmodels.DashboardViewModel
 import org.recherche.app_allocation_gestion_part.viewmodels.LoginViewModel
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val loginViewModel = LoginViewModel(application)
-
+        if (SessionManagement(application).getToken().isNotEmpty()) {
+            startActivity(Intent(this, Dashboard::class.java))
+        }
 
         setContent {
             AppallocationgestionpartTheme {
@@ -123,6 +128,32 @@ fun LoginScreen(viewModel: LoginViewModel) {
         mutableStateOf("")
     }
 
+    var isShowAlert by remember {
+        mutableStateOf(false)
+    }
+
+
+
+    @Composable
+    fun alert(title: String, message: String) {
+        AlertDialog(
+            dismissButton = {
+                TextButton(onClick = { isShowAlert = false }) {
+                    Text(text = "cancel")
+                }
+            }
+            , confirmButton = { TextButton(onClick = {isShowAlert = false}) {
+                Text(text = "confirm")
+            }}, title = { Text(
+                text = title
+            )}, text = { Text(text = message)}, onDismissRequest = {}
+
+        )
+
+    }
+
+
+
 
 
 
@@ -136,6 +167,12 @@ fun LoginScreen(viewModel: LoginViewModel) {
     ) { padding ->
 
 
+        if (isShowAlert) {
+            Log.d("TAG", "LoginScreen: Alert ")
+
+            alert(title = "Connection", message = "Check Your Connection" )
+        }
+
         if (gotToken.value!!) {
             context.startActivity(Intent(context.applicationContext, Dashboard::class.java))
         }
@@ -146,6 +183,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
             }
             viewModel.error.postValue("")
         }
+
 
 
         Box(
@@ -184,16 +222,21 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 Row (horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()){
                     OutlinedButton(
                         onClick = {
-                            val res = viewModel.login(username, password)
-                            if (res == -1) {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("ERROR USERNAME INVALID")
+                            if (checkInternetConnection(context)) {
+                                val res = viewModel.login(username, password)
+                                if (res == -1) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("ERROR USERNAME INVALID")
+                                    }
+                                }else if (res == -2) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("ERROR PASSWORD INVALID")
+                                    }
                                 }
-                            }else if (res == -2) {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("ERROR PASSWORD INVALID")
-                                }
+                                }else {
+                                    isShowAlert = true
                             }
+
                         },
                         modifier = Modifier.width(100.dp)) {
                         Text(text = "SUBMIT")
@@ -221,6 +264,28 @@ fun LoginScreen(viewModel: LoginViewModel) {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -236,21 +301,27 @@ fun LoginScreenPre() {
     }
 
     Box(Modifier.padding(16.dp)) {
-        Column(modifier = Modifier
-            .fillMaxSize(),
-            verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
 
 
             Spacer(modifier = Modifier.height(16.dp))
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
 
-                Image(painter = painterResource(id = R.drawable.image_latst), contentDescription = "Hello", modifier = Modifier.width(150.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.image_latst),
+                    contentDescription = "Hello",
+                    modifier = Modifier.width(150.dp)
+                )
             }
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = username,
                 onValueChange = { username = it },
-                placeholder = {Text("eg. root@go.com")}
+                placeholder = { Text("eg. root@go.com") }
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -261,13 +332,14 @@ fun LoginScreenPre() {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            Row (horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()){
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(onClick = {}, modifier = Modifier.width(100.dp)) {
                     Text(text = "SUBMIT")
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
-                OutlinedButton(onClick = { username = ""; password = "" } , modifier = Modifier.width(100.dp)) {
+                OutlinedButton(onClick = { username = ""; password = "" },
+                    modifier = Modifier.width(100.dp)) {
                     Text(text = "RESET")
                 }
             }
@@ -278,7 +350,7 @@ fun LoginScreenPre() {
             }
             Divider(modifier = Modifier.height(1.dp), thickness = 2.dp, color = Color.Black)
 
-            TextButton(onClick = {  }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            TextButton(onClick = { }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Text(text = "you haven't account?, sign in")
             }
 
@@ -287,4 +359,6 @@ fun LoginScreenPre() {
     }
 
 }
+
+
 

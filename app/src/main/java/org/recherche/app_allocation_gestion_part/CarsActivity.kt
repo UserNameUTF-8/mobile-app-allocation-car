@@ -57,8 +57,10 @@ class CarsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val carsViewModel = CarsViewModel(application)
-
-        carsViewModel.getAllCars()
+        if (checkInternetConnection(this))
+            carsViewModel.getAllCars()
+        else
+            carsViewModel.getCarsLocal()
 
         val authority = SessionManagement(application).getAuthority()
 
@@ -125,7 +127,7 @@ fun CarsScreen(viewModel: CarsViewModel, authority: Int) {
         snackbarHost = {SnackbarHost(snackbarHostState)},
         floatingActionButton = { if (authority < 1)
             FloatingActionButton(onClick = { Log.d("TAG", "CarsScreen: add ") }) {
-                FloatingActionButton(onClick = { }) {
+                FloatingActionButton(onClick = { localContext.startActivity(Intent(localContext, AddCarActivity::class.java))}) {
                     Icon(Icons.Default.Add, contentDescription = "add items")
                 }
             } else {}

@@ -68,7 +68,10 @@ class Dashboard : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dashboardViewModel: DashboardViewModel = DashboardViewModel(application)
-        dashboardViewModel.getAdmin()
+        if (checkInternetConnection(this))
+            dashboardViewModel.getAdmin()
+        else
+            dashboardViewModel.getAdminLocal()
         setContent {
             AppallocationgestionpartTheme {
                 // A surface container using the 'background' color from the theme
@@ -179,6 +182,8 @@ fun ItemsOfBean(text: String, id_: Int) {
                     context.startActivity(intent)
 
                 }else if (text == "Setting") {
+                    val intent = Intent(context, SettingActivity::class.java)
+                    context.startActivity(intent)
                 }else {
                     Log.d("TAG", "ItemsOfBean: $text")
                 }
@@ -215,12 +220,14 @@ fun ItemsOfBean(text: String, id_: Int) {
 fun DashBoardView(viewModel: DashboardViewModel) {
 
 
-    val context = LocalContext.current
+    val context = LocalContext.current as Activity
     val error_ = viewModel.error_.observeAsState()
     val currentUser = viewModel.currentUser.observeAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val countRes = viewModel.countResResponse.observeAsState()
+    val isLogOut = viewModel.isLogOut.observeAsState()
+
 
 
 
@@ -229,6 +236,11 @@ fun DashBoardView(viewModel: DashboardViewModel) {
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
 
+
+        if (isLogOut.value == true) {
+            context.finish()
+        }
+
         if (error_.value!!) {
             LaunchedEffect(Unit) {
             scope.launch {
@@ -236,6 +248,8 @@ fun DashBoardView(viewModel: DashboardViewModel) {
             }
             }
         }
+
+
         Column(modifier = Modifier.padding(it)) {
             if (currentUser.value != null) {
                 HeaderPre(username = currentUser.value!!.name_admin) {

@@ -3,6 +3,7 @@ package org.recherche.app_allocation_gestion_part.viewmodels
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -23,7 +24,10 @@ class HistoryDetailsViewModel(application: Application): AndroidViewModel(applic
     val token = "Bearer ${token_exptime[0]}"
     val historyFullData = MutableLiveData<HistoryResponse>(null)
     val error = MutableLiveData("")
+    val isDeAllocate = MutableLiveData(false)
     val historyRepo = AllocateRepo()
+    var toggledTrack  = MutableLiveData(false)
+
 
     fun getHistoryFullData(id_: Int) {
 
@@ -36,11 +40,43 @@ class HistoryDetailsViewModel(application: Application): AndroidViewModel(applic
         }
     }
 
-    fun disActiveHistory(id: Int) {
-        viewModelScope.launch {
+    fun addToggleTrack(id:Int) {
+        if (!historyFullData.value!!.is_dup) {
+            viewModelScope.launch {
+                val response = historyRepo.track(token, id)
+                if (response.body() != null && response.code() == 200) {
+                    toggledTrack.postValue(true)
+                }
+            }
+        }else {
+            viewModelScope.launch {
+                val response = historyRepo.removeTrack(token, id)
+                if (response.body() != null && response.code() == 200) {
+                    toggledTrack.postValue(true)
+                }
+            }
         }
     }
 
+    fun disActiveHistory(id: Int) {
+        viewModelScope.launch {
+            viewModelScope.launch {
+
+            }
+        }
+    }
+
+
+    fun disAllocateCar(id: Int) {
+        viewModelScope.launch {
+            val response = historyRepo.unAllocate(token, id)
+            if (response.body() != null && response.code() == 200) {
+                isDeAllocate.postValue(true)
+            }
+            else
+                error.postValue("problem of type ${response.code()}")
+        }
+    }
 
 
 }

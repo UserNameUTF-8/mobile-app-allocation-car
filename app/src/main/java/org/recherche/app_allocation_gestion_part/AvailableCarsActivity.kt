@@ -1,6 +1,7 @@
 package org.recherche.app_allocation_gestion_part
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -57,7 +58,9 @@ class AvailableCarsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel = AvailableCarsViewModel(application)
         viewModel.getAllAvailableCars()
-        val idUser = intent.getIntExtra("id_user", -1)
+        val idUser = intent.getIntExtra("id", -1)
+        val username = intent.getStringExtra("username")
+
         if (idUser < 0) {
             finish()
         }
@@ -68,7 +71,7 @@ class AvailableCarsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CarsScreen(viewModel = viewModel)
+                    CarsScreen(viewModel = viewModel, username!!, idUser)
                 }
             }
         }
@@ -98,7 +101,7 @@ fun GreetingPreview8() {
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarsScreen(viewModel: AvailableCarsViewModel) {
+fun CarsScreen(viewModel: AvailableCarsViewModel, username: String, id: Int) {
 
 
     val localContext = LocalContext.current as Activity
@@ -128,7 +131,7 @@ fun CarsScreen(viewModel: AvailableCarsViewModel) {
             if (listCars.value != null) {
                 LazyColumn(modifier = Modifier.padding(16.dp)) {
                     items(listCars.value!!.size) {
-                        CarItem(listCars.value!![it])
+                        CarItem(listCars.value!![it], username, id)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
@@ -148,10 +151,26 @@ fun CarsScreen(viewModel: AvailableCarsViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarItem(carResponse: CarResponse) {
+fun CarItem(carResponse: CarResponse, username:String, id: Int) {
     val textActive  =  @Composable {Text(text = "Active", style = MaterialTheme.typography.labelSmall , color = Color.Green , fontWeight = FontWeight.Bold)}
-    val textDisActive = @Composable {Text(text = "Dis-active", style = MaterialTheme.typography.labelSmall , color = Color.Red , fontWeight = FontWeight.Bold)}
-    OutlinedCard(onClick = {Log.d("TAG", "CarItem: start activity") }) {
+    val textDisActive = @Composable {
+        Text(
+            text = "Dis-active",
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.Red,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
+    val activity = LocalContext.current as Activity
+    OutlinedCard(onClick = {
+        val intent_ = Intent(activity, CreateAllocationActivity::class.java)
+        intent_.putExtra("username", username )
+        intent_.putExtra("id", id)
+        intent_.putExtra("identi", carResponse.identifyer_car)
+        intent_.putExtra("id_car", carResponse.id_car)
+        activity.startActivity(intent_)
+    }) {
         Row(Modifier.padding(16.dp)) {
             Column {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

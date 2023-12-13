@@ -17,6 +17,7 @@ class SessionManagement(application: Application) {
     fun removeToken(): Boolean {
         val editor = sharedPreferences.edit()
         editor.remove(TOKEN)
+        editor.apply()
         return true
     }
 
@@ -31,7 +32,7 @@ class SessionManagement(application: Application) {
     fun putAuthority(authority: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt(AUTHORITY, authority)
-        editor.commit()
+        editor.apply()
     }
 
     fun getAuthority(): Int {
@@ -39,7 +40,7 @@ class SessionManagement(application: Application) {
     }
 
     fun removeAuthority() : Boolean{
-        sharedPreferences.edit().remove(AUTHORITY).commit()
+        sharedPreferences.edit().remove(AUTHORITY).apply()
         return true
     }
 
